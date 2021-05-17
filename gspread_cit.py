@@ -48,7 +48,7 @@ def get_fresh_query_result(redash_url, query_id, api_key, params):
     return response.json()['query_result']['data']['rows']
 
 
-def get_user_df(url, api_key):
+def get_user_df(url, api_key, now):
     query_id = 375
     params = {"org": "paragon", "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"), "platform": "performance"}
     result = get_fresh_query_result(url, query_id, api_key, params)
@@ -224,7 +224,7 @@ def main():
 
     review_cycle = 11
 
-    user_data, user_raw = get_user_df(url, api_key)
+    user_data, user_raw = get_user_df(url, api_key, now)
     activity_data, activity_raw = get_activity_df(user_data, url, api_key, now)
     obj_data, obj_raw = get_obj_df(url, api_key, now)
     review_data = get_review_df(url, api_key, review_cycle, user_data)
