@@ -205,13 +205,13 @@ def get_review_df(url, api_key, cycle_id, user_df):
     review_df = review_df.join(user_df[['email', 'direktorat']].set_index('email'), on='Reviewer Email', how='left')
     review_df.rename(columns={'direktorat': 'Reviewer Directorate'}, inplace=True)
     review_df = review_df[['id', 'email', 'name', 'Reviewee Directorate', 'Reviewee Department', 'Self Review Progress',
-                           'Manager Review Progress', 'Reviewer Directorate', 'Reviewer Name']]
+                           'Reviewer Name', 'Reviewer Directorate', 'Manager Review Progress']]
 
     return review_df
 
 
 def main():
-    service_acc_file = 'C://Users/Collin/Deep Learning/api-trial-scheduler-gsheets-172663128f76.json'
+    service_acc_file = 'api-trial-scheduler-gsheets-172663128f76.json'
     spread_id = '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4'
 
     gc = gspread.service_account(filename=service_acc_file)
