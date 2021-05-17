@@ -1,0 +1,5 @@
+numpy
+pandas
+requests
+gspread
+gspread_dataframe
