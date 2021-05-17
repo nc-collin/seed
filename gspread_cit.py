@@ -218,49 +218,62 @@ def main():
     sh = gc.open_by_key(spread_id)
 
     now = dt.now()
+    print("Script running time: " + str(now))
 
     url = 'https://metabase.happy5.net'
     api_key = '2uLA3yC87urFKbUViMY32pX0ZPwHHoqo3GzeBs7n'
 
     review_cycle = 11
-
+    
+    print("Start Fetching Queries from Redash")
     user_data, user_raw = get_user_df(url, api_key, now)
+    print("User Data Fetched!")
     activity_data, activity_raw = get_activity_df(user_data, url, api_key, now)
+    print("Activity Data Fetched!")
     obj_data, obj_raw = get_obj_df(url, api_key, now)
+    print("Objective Data Fetched!")
     review_data = get_review_df(url, api_key, review_cycle, user_data)
+    print("Review Data Fetched!")
 
     worksheet = sh.worksheet("User")
     length_ws0 = len(worksheet.get_all_records())
     sh.values_clear("User!A2:G" + str(length_ws0 + 1))
     set_with_dataframe(worksheet, user_data)
+    print("User sheet Updated")
 
     act_ws = sh.worksheet("Activity")
     length_ws1 = len(act_ws.get_all_records())
     sh.values_clear("Activity!A2:B" + str(length_ws1 + 1))
     set_with_dataframe(act_ws, activity_data)
+    print("Activity sheet Updated")
 
     obj_ws = sh.worksheet("Objective")
     length_ws2 = len(obj_ws.get_all_records())
     sh.values_clear("Objective!A2:H" + str(length_ws2 + 1))
     set_with_dataframe(obj_ws, obj_data)
+    print("Objective sheet Updated")
 
     user_raw_ws = sh.worksheet("Raw Data - Users")
     sh.values_clear("Raw Data - Users!A:P")
     set_with_dataframe(user_raw_ws, user_raw)
+    print("Raw Data - Users sheet Updated")
 
     weekly_raw_ws = sh.worksheet("Raw Data - MtD Activity")
     sh.values_clear("Raw Data - MtD Activity!A:T")
     set_with_dataframe(weekly_raw_ws, activity_raw)
+    print("Raw Data - MtD Activity sheet Updated")
 
     obj_raw_ws = sh.worksheet("Raw Data - Objective")
     sh.values_clear("Raw Data - Objective!A:AE")
     set_with_dataframe(obj_raw_ws, obj_raw)
+    print("Raw Data - Objective sheet Updated")
 
     review_ws = sh.worksheet("Review Assignment Q1")
     sh.values_clear("Review Assignment Q1!A:AE")
     set_with_dataframe(review_ws, review_data)
+    print("Review Assignment Q1 sheet Updated")
 
-    print("runtime : " + str(dt.now() - now))
+    print("Runtime : " + str(dt.now() - now))
 
 
 main()
