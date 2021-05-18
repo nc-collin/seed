@@ -148,9 +148,6 @@ def get_obj_df(url, api_key, now):
 
     obj_df['Status Progress'] = np.select(conditions, values)
 
-    obj_df['Due Date'] = pd.to_datetime(obj_df['Due Date'])
-    obj_df['Due Date Year'] = obj_df['Due Date'].dt.strftime('%Y')
-
     obj_df_edit = obj_df[
         ['Goal ID', 'Goal Type', 'Owner Name', 'Owner ID',
          'Directorate', 'Due Date', 'Status Progress', 'Goal State']]
@@ -162,10 +159,10 @@ def get_obj_df(url, api_key, now):
             , 'Reviewer Name', 'Goal State', 'followers', 'Date Created', 'Start Date', 'Due Date', 'Completion Date',
          'Review Date', 'Overdue Status', 'recurrence', 'Last Activity',
          'Last Updated At', 'review_comment', 'Average Score', 'review_score', 'Status Progress', 'Owner ID',
-         'Directorate', 'Due Date Year']]
+         'Directorate']]
     obj_df_raw = obj_df_raw.drop_duplicates(
         subset=['Goal ID', 'Goal Type', 'Owner Name', 'Owner Email', 'Owner ID', 'Directorate', 'Due Date',
-                'Due Date Year', 'Goal State', 'Status Progress'])
+                'Goal State', 'Status Progress'])
     obj_df_raw = obj_df_raw[
         ['Goal ID', 'Goal Name', 'objective_type', 'Goal Type', 'Weight', 'Complexity', 'description', 'Target',
          'Current Value', 'Metrics', 'label', 'Creator Name', 'Owner Name', 'Owner Email'
@@ -222,8 +219,6 @@ def main():
 
     url = 'https://metabase.happy5.net'
     api_key = '2uLA3yC87urFKbUViMY32pX0ZPwHHoqo3GzeBs7n'
-
-    review_cycle = 11
     
     print("Start Fetching Queries from Redash")
     user_data, user_raw = get_user_df(url, api_key, now)
@@ -232,6 +227,8 @@ def main():
     print("Activity Data Fetched!")
     obj_data, obj_raw = get_obj_df(url, api_key, now)
     print("Objective Data Fetched!")
+
+    review_cycle = 11
     review_data = get_review_df(url, api_key, review_cycle, user_data)
     print("Review Data Fetched!")
 
@@ -269,7 +266,7 @@ def main():
     print("Raw Data - Objective sheet Updated")
 
     review_ws = sh.worksheet("Review Assignment Q1")
-    sh.values_clear("Review Assignment Q1!A:AE")
+    sh.values_clear("Review Assignment Q1!A:I")
     set_with_dataframe(review_ws, review_data)
     print("Review Assignment Q1 sheet Updated")
 
