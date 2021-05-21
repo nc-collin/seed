@@ -228,9 +228,9 @@ def main():
     obj_data, obj_raw = get_obj_df(url, api_key, now)
     print("Objective Data Fetched!")
 
-    review_cycle = 11
-    review_data = get_review_df(url, api_key, review_cycle, user_data)
-    print("Review Data Fetched!")
+    # review_cycle = 11
+    # review_data = get_review_df(url, api_key, review_cycle, user_data)
+    # print("Review Data Fetched!")
 
     worksheet = sh.worksheet("User")
     length_ws0 = len(worksheet.get_all_records())
@@ -265,10 +265,10 @@ def main():
     set_with_dataframe(obj_raw_ws, obj_raw)
     print("Raw Data - Objective sheet Updated")
 
-    review_ws = sh.worksheet("Review Assignment Q1")
-    sh.values_clear("Review Assignment Q1!A:I")
-    set_with_dataframe(review_ws, review_data)
-    print("Review Assignment Q1 sheet Updated")
+    # review_ws = sh.worksheet("Review Assignment Q1")
+    # sh.values_clear("Review Assignment Q1!A:I")
+    # set_with_dataframe(review_ws, review_data)
+    # print("Review Assignment Q1 sheet Updated")
 
     print("Runtime : " + str(dt.now() - now))
 
