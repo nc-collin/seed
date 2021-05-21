@@ -190,8 +190,8 @@ def get_review_df(url, api_key, cycle_id, user_df):
     manager_review_df = manager_review_df[
         (manager_review_df['state'] == 'in_progress') | (manager_review_df['state'] == 'done')]
 
-    self_review_df.replace({"in_progress": "Not Done", "done": "Done"}, inplace=True)
-    manager_review_df.replace({"in_progress": "Not Done", "done": "Done"}, inplace=True)
+    self_review_df.replace({"in_progress": "Not Done", "done": "Done", "incomplete": "Not Done"}, inplace=True)
+    manager_review_df.replace({"in_progress": "Not Done", "done": "Done", "incomplete": "Not Done"}, inplace=True)
 
     review_df = user_df[['id', 'email', 'name', 'direktorat', 'department']]
     review_df = review_df.join(self_review_df.set_index('Reviewee Email'), on='email', how='inner')
