@@ -68,7 +68,7 @@ def get_post_df(url, api_key, now):
     if now.strftime("%d") == "01":
         now_string = now.strftime("%Y-%m-%dT00:00:00")
         con = now - timedelta(days=1)
-        month_string = now.strftime("%B")
+        month_string = con.strftime("%B")
         params = {"scheme_name": "xlaxiata", "start_date": con.strftime("%Y-%m-01"), "end_date": now_string,
                   "end_date_activity": now_string}
         print("Fetching Data from Last Month")
@@ -109,7 +109,7 @@ def get_post_df(url, api_key, now):
 
     # Rearranging the columns of Dataframe according to the requests
     post_df = post_df[
-        ['id', 'Post Url', 'Brand', 'Group Name', 'label', 'Creator', 'email', 'Week', 'Date Post Created', 'Month',
+        ['index', 'id', 'Post Url', 'Brand', 'Group Name', 'label', 'Creator', 'email', 'Week', 'Date Post Created', 'Month',
          'Time Post Created', 'Post Type', 'Content', 'Hashtags', 'Post State', 'Total Post Views',
          'Total Post Comments', 'Total Post Like']]
 
@@ -163,7 +163,7 @@ def main():
     sh = gc.open_by_key(SAMPLE_SPREADSHEET_ID)
 
     write_monthly(post_df, month_string, sh)
-    write_summary(post_df, month_string, sh)
+    #write_summary(post_df, month_string, sh)
 
 
 main()
