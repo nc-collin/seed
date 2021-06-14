@@ -102,15 +102,16 @@ def get_post_df(url, api_key, now):
     # TODO: Automation for this Brand Column
     post_df['Brand'] = ""
 
+    # Adding Index to the DataFrame, more like resetting the index to let the index become a column in dataframe
+    post_df.reset_index(drop=True, inplace=True)
+    post_df.reset_index(inplace=True)
+    post_df['index'] = post_df['index'] + 1
+
     # Rearranging the columns of Dataframe according to the requests
     post_df = post_df[
         ['id', 'Post Url', 'Brand', 'Group Name', 'label', 'Creator', 'email', 'Week', 'Date Post Created', 'Month',
          'Time Post Created', 'Post Type', 'Content', 'Hashtags', 'Post State', 'Total Post Views',
          'Total Post Comments', 'Total Post Like']]
-
-    # Adding Index to the DataFrame, more like resetting the index to let the index become a column in dataframe
-    post_df.reset_index(inplace=True)
-    post_df['index'] = post_df['index'] + 1
 
     # Renaming the columns accordingly
     post_df.rename(columns={'index': 'No', 'id': 'Post ID', 'label': 'Label', 'email': 'Creator Email'}, inplace=True)
