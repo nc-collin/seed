@@ -134,7 +134,7 @@ def write_summary(post_df, month_string, sh):
     summary_df.loc[summary_df['Content filtered by label'] == "ITS XL", summary_string]= its_xl
     summary_df.loc[summary_df['Content filtered by label'] == "Internal communication (others", summary_string] = internal_comm
 
-    print("Overwriting values in " + month_string + " sheet")
+    print("Overwriting values in " + month_string + " Column")
     sh.values_clear("Summary!A:F")
     set_with_dataframe(summary_ws, summary_df)
     print("Summary Sheet Overwriting Done!")
@@ -163,7 +163,7 @@ def main():
     sh = gc.open_by_key(SAMPLE_SPREADSHEET_ID)
 
     write_monthly(post_df, month_string, sh)
-    #write_summary(post_df, month_string, sh)
+    write_summary(post_df, month_string, sh)
 
 
 main()
