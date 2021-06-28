@@ -1,4 +1,5 @@
 # Check In Time Dashboard Gspread
+import os
 import json
 import time
 from datetime import datetime as dt
@@ -208,8 +209,8 @@ def get_review_df(url, api_key, cycle_id, user_df):
 
 
 def main():
-    service_acc_file = 'api-trial-scheduler-gsheets-172663128f76.json'
-    spread_id = '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4'
+    service_acc_file = os.getenv('SERVICE_ACC')
+    spread_id = os.getenv('PARAGON_SID')
 
     gc = gspread.service_account(filename=service_acc_file)
     sh = gc.open_by_key(spread_id)
@@ -218,7 +219,8 @@ def main():
     print("Script running time: " + str(now))
 
     url = 'https://metabase.happy5.net'
-    api_key = '2uLA3yC87urFKbUViMY32pX0ZPwHHoqo3GzeBs7n'
+    api_key = os.getenv('API_KEY')
+    rev = os.getenv('ON_REV')
     
     print("Start Fetching Queries from Redash")
     user_data, user_raw = get_user_df(url, api_key, now)
@@ -227,10 +229,6 @@ def main():
     print("Activity Data Fetched!")
     obj_data, obj_raw = get_obj_df(url, api_key, now)
     print("Objective Data Fetched!")
-
-    # review_cycle = 11
-    # review_data = get_review_df(url, api_key, review_cycle, user_data)
-    # print("Review Data Fetched!")
 
     worksheet = sh.worksheet("User")
     length_ws0 = len(worksheet.get_all_records())
@@ -265,12 +263,18 @@ def main():
     set_with_dataframe(obj_raw_ws, obj_raw)
     print("Raw Data - Objective sheet Updated")
 
-    # review_ws = sh.worksheet("Review Assignment Q1")
-    # sh.values_clear("Review Assignment Q1!A:I")
-    # set_with_dataframe(review_ws, review_data)
-    # print("Review Assignment Q1 sheet Updated")
+    if rev == 'TRUE':
+        review_cycle = os.getenv('REV_CYCLE')
+        rev_period = os.getenv('REV_PERIOD')
+        review_data = get_review_df(url, api_key, review_cycle, user_data)
+        print("Review Data Fetched!")
 
-    print("Runtime : " + str(dt.now() - now))
+        review_ws = sh.worksheet("Review Assignment " + rev_period)
+        sh.values_clear("Review Assignment " + rev_period + "!A:I")
+        set_with_dataframe(review_ws, review_data)
+        print("Review Assignment " + rev_period + " sheet Updated")
+
+        print("Runtime : " + str(dt.now() - now))
 
 
 main()
