@@ -157,7 +157,7 @@ def main():
     post_df = get_post_df(url, api_key, now)
 
     service_acc_file = os.getenv('SERVICE_ACC')
-    SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SID')
+    SAMPLE_SPREADSHEET_ID = os.getenv('XL_SHEET_ID')
 
     gc = gspread.service_account(filename=service_acc_file)
     sh = gc.open_by_key(SAMPLE_SPREADSHEET_ID)

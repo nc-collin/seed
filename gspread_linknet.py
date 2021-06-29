@@ -197,7 +197,7 @@ def main():
     url = 'https://metabase.happy5.net'
     api_key = os.getenv('API_KEY')
     service_acc_file = os.getenv('SERVICE_ACC')
-    SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SID')
+    SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SHEET_ID')
 
     print("Start Fetching Queries from Redash")
     user_data = get_user_df(url, api_key, now)

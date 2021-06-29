@@ -51,7 +51,8 @@ def get_fresh_query_result(redash_url, query_id, api_key, params):
 
 def get_user_df(url, api_key, now):
     query_id = 375
-    params = {"org": "paragon", "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"), "platform": "performance"}
+    params = {"org": "paragon", "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"),
+              "platform": "performance"}
     result = get_fresh_query_result(url, query_id, api_key, params)
 
     user_df = pd.DataFrame(result)
@@ -210,7 +211,7 @@ def get_review_df(url, api_key, cycle_id, user_df):
 
 def main():
     service_acc_file = os.getenv('SERVICE_ACC')
-    spread_id = os.getenv('PARAGON_SID')
+    spread_id = os.getenv('PARAGON_SHEET_ID')
 
     gc = gspread.service_account(filename=service_acc_file)
     sh = gc.open_by_key(spread_id)
@@ -220,8 +221,8 @@ def main():
 
     url = 'https://metabase.happy5.net'
     api_key = os.getenv('API_KEY')
-    rev = os.getenv('ON_REV')
-    
+    rev = os.getenv('ONGOING_REVIEW')
+
     print("Start Fetching Queries from Redash")
     user_data, user_raw = get_user_df(url, api_key, now)
     print("User Data Fetched!")
@@ -264,8 +265,8 @@ def main():
     print("Raw Data - Objective sheet Updated")
 
     if rev == 'TRUE':
-        review_cycle = os.getenv('REV_CYCLE')
-        rev_period = os.getenv('REV_PERIOD')
+        review_cycle = os.getenv('REVIEW_CYCLE_ID')
+        rev_period = os.getenv('REVIEW_PERIOD')
         review_data = get_review_df(url, api_key, review_cycle, user_data)
         print("Review Data Fetched!")
 
