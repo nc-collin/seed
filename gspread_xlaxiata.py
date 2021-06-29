@@ -153,11 +153,11 @@ def main():
     month_string = now.strftime("%B")
 
     url = 'https://metabase.happy5.net'
-    api_key = '2uLA3yC87urFKbUViMY32pX0ZPwHHoqo3GzeBs7n'
+    api_key = os.getenv('API_KEY')
     post_df = get_post_df(url, api_key, now)
 
-    service_acc_file = 'metabase-161510-c3e51e3576ce.json'
-    SAMPLE_SPREADSHEET_ID = '1x2OSUmbWpoe_ZU07GpOMwageTvyrT7rWrUgEkE5ergQ'
+    service_acc_file = os.getenv('SERVICE_ACC')
+    SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SID')
 
     gc = gspread.service_account(filename=service_acc_file)
     sh = gc.open_by_key(SAMPLE_SPREADSHEET_ID)
