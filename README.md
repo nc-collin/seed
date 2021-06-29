@@ -9,20 +9,20 @@
 Paragon - Check In Time
 | Name | Description |
 | ---- | ----------- |
-| PARAGON_SID | Spreadsheet ID of your Google Sheet File |
-| ON_REV | TRUE or FALSE Whether there are ongoing performance review or not |
-| REV_CYCLE | Review Cycle ID (Must be specified) |
-| REV_PERIOD | Review Period (Q1,Q2,Q3,Q4) |
+| PARAGON_SHEET_ID | Spreadsheet ID of your Google Sheet File |
+| ONGOING_REVIEW | TRUE or FALSE Whether there are ongoing performance review or not |
+| REVIEW_CYCLE_ID | Review Cycle ID (Must be specified) |
+| REVIEW_PERIOD | Review Period (Q1,Q2,Q3,Q4) |
 
 Linknet - First Squad Impact
 | Name | Description |
 | ---- | ----------- |
-| LINKNET_SID | Spreadsheet ID of your Google Sheet File |
+| LINKNET_SHEET_ID | Spreadsheet ID of your Google Sheet File |
 
 XL Axiata - XLife
 | Name | Description |
 | ---- | ----------- |
-| XL_SID | Spreadsheet ID of your Google Sheet File |
+| XL_SHEET_ID | Spreadsheet ID of your Google Sheet File |
 
 # Example Value
 For Paragon - gspread_cit.py
@@ -33,8 +33,8 @@ For Paragon - gspread_cit.py
 | API_KEY | Redash API KEY |
 | PARAGON_SHEET_ID | '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4' |
 | ONGOING_REVIEW | 'FALSE' |
-| REVIEW_CYCLE_ID | 9 |
-| REVIEW_PERIOD | Q2 |
+| REVIEW_CYCLE_ID | '9' |
+| REVIEW_PERIOD | 'Q2' |
 
 For Linknet - gspread_linknet.py
 | Name | Values |
