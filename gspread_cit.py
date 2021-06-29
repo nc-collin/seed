@@ -219,7 +219,7 @@ def main():
     now = dt.now()
     print("Script running time: " + str(now))
 
-    url = 'https://metabase.happy5.net'
+    url = os.getenv('REDASH_URL')
     api_key = os.getenv('API_KEY')
     rev = os.getenv('ONGOING_REVIEW')
 

@@ -194,7 +194,7 @@ def main():
     print("Script running time: " + str(now))
     # now_string = now.strftime("%Y-%m-%dT23:59:59")
 
-    url = 'https://metabase.happy5.net'
+    url = os.getenv('REDASH_URL')
     api_key = os.getenv('API_KEY')
     service_acc_file = os.getenv('SERVICE_ACC')
     SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SHEET_ID')

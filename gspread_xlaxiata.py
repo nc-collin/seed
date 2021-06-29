@@ -152,7 +152,7 @@ def main():
     now = dt.now()
     month_string = now.strftime("%B")
 
-    url = 'https://metabase.happy5.net'
+    url = os.getenv('REDASH_URL')
     api_key = os.getenv('API_KEY')
     post_df = get_post_df(url, api_key, now)
 
