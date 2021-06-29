@@ -28,7 +28,7 @@ XL Axiata - XLife
 For Paragon - gspread_cit.py
 | Name | Values |
 | ---- | ----------- |
-| REDASH_URL | 'https://metabase.happy5.net |
+| REDASH_URL | 'https://metabase.happy5.net' |
 | SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
 | API_KEY | Redash API KEY |
 | PARAGON_SHEET_ID | '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4' |
@@ -39,7 +39,7 @@ For Paragon - gspread_cit.py
 For Linknet - gspread_linknet.py
 | Name | Values |
 | ---- | ----------- |
-| REDASH_URL | 'https://metabase.happy5.net |
+| REDASH_URL | 'https://metabase.happy5.net' |
 | SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
 | API_KEY | Redash API KEY |
 | LINKNET_SHEET_ID | '1EM9dtqZu-cj0f60g_1kb1wYfT096vMs3_k4rc2Y_R1E' |
@@ -47,7 +47,7 @@ For Linknet - gspread_linknet.py
 For XL - gspread_xlaxiata.py
 | Name | Values |
 | ---- | ----------- |
-| REDASH_URL | 'https://metabase.happy5.net |
+| REDASH_URL | 'https://metabase.happy5.net' |
 | SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
 | API_KEY | Redash API KEY |
 | XL_SHEET_ID | '1x2OSUmbWpoe_ZU07GpOMwageTvyrT7rWrUgEkE5ergQ' |
