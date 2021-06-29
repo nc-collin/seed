@@ -1,6 +1,7 @@
 # Common Environment Variables
 | Name | Description |
 | ---- | ----------- |
+| REDASH_URL | Specify your redash URL |
 | SERVICE_ACC | Specify the path of your Service Account File (.json) from Google Cloud |
 | API_KEY | Redash API KEY |
 
