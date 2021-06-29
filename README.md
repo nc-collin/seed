@@ -23,3 +23,31 @@ XL Axiata - XLife
 | Name | Description |
 | ---- | ----------- |
 | XL_SID | Spreadsheet ID of your Google Sheet File |
+
+# Example Value
+For Paragon - gspread_cit.py
+| Name | Values |
+| ---- | ----------- |
+| REDASH_URL | 'https://metabase.happy5.net |
+| SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
+| API_KEY | Redash API KEY |
+| PARAGON_SHEET_ID | '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4' |
+| ONGOING_REVIEW | 'FALSE' |
+| REVIEW_CYCLE_ID | 9 |
+| REVIEW_PERIOD | Q2 |
+
+For Linknet - gspread_linknet.py
+| Name | Values |
+| ---- | ----------- |
+| REDASH_URL | 'https://metabase.happy5.net |
+| SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
+| API_KEY | Redash API KEY |
+| LINKNET_SHEET_ID | '1EM9dtqZu-cj0f60g_1kb1wYfT096vMs3_k4rc2Y_R1E' |
+
+For XL - gspread_xlaxiata.py
+| Name | Values |
+| ---- | ----------- |
+| REDASH_URL | 'https://metabase.happy5.net |
+| SERVICE_ACC | 'metabase-161510-c3e51e3576ce.json' |
+| API_KEY | Redash API KEY |
+| XL_SHEET_ID | '1x2OSUmbWpoe_ZU07GpOMwageTvyrT7rWrUgEkE5ergQ' |
