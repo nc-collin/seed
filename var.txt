@@ -5,8 +5,8 @@ SERVICE_ACC = 'metabase-161510-c3e51e3576ce.json'
 ## Paragon
 PARAGON_SID = '13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4'
 ON_REV = 'FALSE'
-REV_CYCLE = #Check CIT first
-REV_PERIOD = #Q1/Q2/Q3/Q4
+REV_CYCLE = '9'
+REV_PERIOD = 'Q2'
 
 ## Linknet
 LINKNET_SID = '1EM9dtqZu-cj0f60g_1kb1wYfT096vMs3_k4rc2Y_R1E'
