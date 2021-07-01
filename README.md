@@ -11,7 +11,7 @@
 | ---- | ----------- | ------------- |
 | PARAGON_SHEET_ID | Spreadsheet ID of your Google Sheet File | `13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4` |
 | ONGOING_REVIEW | TRUE or FALSE Whether there are ongoing performance review or not | `'FALSE'` |
-| REVIEW_CYCLE_ID | Review Cycle ID (Must be specified) | `9` |
+| REVIEW_CYCLE_ID | Review Cycle ID (Must be specified) (Value must be string)| `9` |
 | REVIEW_PERIOD | Review Period (Q1,Q2,Q3,Q4) | `Q2` |
 
 ### Linknet - First Squad Impact
