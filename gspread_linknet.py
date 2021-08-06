@@ -50,15 +50,13 @@ def get_fresh_query_result(redash_url, query_id, api_key, params):
     return response.json()['query_result']['data']['rows']
 
 
-def get_user_df(url, api_key, now):
-    query_id = 443
-    params = {"org": "linknet", "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"),
+def get_user_df(url, api_key, now, query_id, query_id2, orgname):
+    params = {"org": orgname, "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"),
               "platform": "performance"}
 
     result = get_fresh_query_result(url, query_id, api_key, params)
 
-    query_id2 = 452
-    params2 = {"Org Name": "linknet", "Start Period": "2021-01-01", "End Period": "2021-12-31"}
+    params2 = {"Org Name": orgname, "Start Period": now.strftime("%Y-01-01"), "End Period": now.strftime("%Y-12-31")}
 
     result2 = get_fresh_query_result(url, query_id2, api_key, params2)
 
@@ -84,35 +82,42 @@ def get_user_df(url, api_key, now):
     return user_linknet
 
 
-def get_progress_df(url, api_key, now, user_df):
+def get_progress_df(url, api_key, now, user_df, query_id,orgname):
     # use 421 or 455 according to needs
-    query_id2 = 455
-    params2 = {"Org Name": "linknet"}
-    result_2 = get_fresh_query_result(url, query_id2,api_key,params2)
+    params2 = {"Org Name": orgname}
+    result_2 = get_fresh_query_result(url, query_id,api_key,params2)
 
     obj_df = pd.DataFrame(result_2)
 
-    obj_df['Progress Bar'] = (obj_df['Current Value'] - obj_df['Start Value'])/obj_df['Target']
-    obj_df.loc[obj_df['Progress Bar'] < 0, 'Progress Bar'] = 0
+    obj_df['Progress Bar'] = 0
+    for i in range(obj_df.shape[0]):
+        if obj_df['calculation_type'][i] == 'less_is_better':
+            delta = obj_df['Target'][i] - obj_df['Current Value'][i]
+            abs_target = abs(obj_df['Target'][i])
+            obj_df.loc[i, 'Progress Bar'] = (1 + (delta / abs_target)) * 100
+        else:
+            delta = obj_df['Current Value'][i] - obj_df['Start Value'][i]
+            target = obj_df['Target'][i] - obj_df['Start Value'][i]
+            obj_df.loc[i, 'Progress Bar'] = 100 * delta / target
     elapsed_time = pd.DataFrame((now - pd.to_datetime(obj_df['Start Date'])).dt.days)
     total_time = pd.DataFrame((pd.to_datetime(obj_df['Due Date']) - pd.to_datetime(obj_df['Start Date'])).dt.days)
     progress_chunk = 24
     step = total_time[0].div(progress_chunk)
     ugly_diff_threshold = 0.01
 
-    expected_ratio = pd.DataFrame(np.ceil(np.floor(elapsed_time['Start Date']/step)*step)/total_time[0])
+    expected_ratio = pd.DataFrame(np.ceil(np.floor(elapsed_time['Start Date'] / step) * step) / total_time[0])
     expected_ratio[expected_ratio[0] > 1] = 1
 
     diff = pd.DataFrame(expected_ratio[0].mod(progress_chunk))
     n = diff.shape[0]
     for i in range(n):
-        if expected_ratio[0][i] < ugly_diff_threshold:
+        if diff[0][i] < ugly_diff_threshold:
             if expected_ratio[0][i] < 1:
                 expected_ratio[0][i] -= diff[0][i]
 
-    obj_df['Expected Completion Ratio'] = expected_ratio
+    obj_df['Expected Completion Ratio'] = expected_ratio * 100
 
-    ratio = pd.DataFrame(obj_df['Progress Bar']/obj_df['Expected Completion Ratio'])
+    ratio = pd.DataFrame(obj_df['Progress Bar'] / obj_df['Expected Completion Ratio'])
     ratio[ratio[0] > 1] = 1.1
     obj_df['ratio'] = ratio
 
@@ -121,7 +126,7 @@ def get_progress_df(url, api_key, now, user_df):
         (obj_df['ratio'] > 0.5) & (obj_df['ratio'] <= 0.75),
         (obj_df['ratio'] > 0.75) & (obj_df['ratio'] <= 1),
         (obj_df['ratio'] > 1),
-       (obj_df['ratio'].isnull())]
+        (obj_df['ratio'].isnull())]
     values = ['At Risk', 'Left Behind', 'On Track', 'Exceed Expectation', 'No Measurement Unit Found']
 
     obj_df['Status Progress'] = np.select(conditions, values)
@@ -133,29 +138,33 @@ def get_progress_df(url, api_key, now, user_df):
     obj_df['updated'][obj_df['updated'] == True] = 'Updated'
     obj_df['updated'][obj_df['updated'] == False] = 'Active'
 
-    obj_df = obj_df[obj_df['KPI Dependency'] == 'KPI Individu'].reset_index()
-    # predef_df = obj_df[obj_df['KPI Dependency'] == 'Predefined KPI'].reset_index()
-
-    obj_df_edit = obj_df[['Owner ID','Goal Type','Progress Month','Goal Name','Weight','Progress Bar',
-                          'Status Progress', 'updated', 'Last Updated At','Goal ID']]
-    monthly_df = user_df.join(obj_df_edit.set_index('Owner ID'), on = 'id', how = 'left')
+    obj_df_edit = obj_df[['Owner ID', 'Goal Type', 'Progress Month', 'Goal Name', 'Weight', 'Progress Bar',
+                          'Status Progress', 'updated', 'Last Updated At', 'Goal ID', 'KPI Dependency']]
+    monthly_df = user_df.join(obj_df_edit.set_index('Owner ID'), on='id', how='left')
     monthly_df.drop('id', axis='columns', inplace=True)
     monthly_df.reset_index(drop=True, inplace=True)
     monthly_df.reset_index(inplace=True)
 
-    monthly_df = monthly_df[['index','external_id', 'name', 'job_title', 'salary_level', 'department', 'division',
-                             'direktorat', 'Job Role','Goal Type','Progress Month','Goal Name','Weight','Progress Bar',
-                             'Status Progress', 'Superior', 'Supersuperior', 'updated', 'Last Updated At','Goal ID']]
+    monthly_df = monthly_df[['index', 'external_id', 'name', 'job_title', 'salary_level', 'department', 'division',
+                             'direktorat', 'Job Role', 'Goal Type', 'Progress Month', 'Goal Name', 'KPI Dependency',
+                             'Weight', 'Progress Bar',
+                             'Status Progress', 'Superior', 'Supersuperior', 'updated', 'Last Updated At']]
 
-    monthly_df = monthly_df.dropna(subset = ['Goal Name'])
+    monthly_df = monthly_df.dropna(subset=['Goal Name'])
 
-    monthly_df.rename(columns = {'index': 'No', 'external_id': 'Employee ID', 'name': 'Employee Name', 'job_title': 'Position Name', 'salary_level': 'Job Level / Grade',
-                                 'department': 'Department', 'division': 'Division', 'direktorat': 'Directorate',
-                                 'Job Role': 'Category', 'Goal Type': 'KPI Category', 'Goal Name': 'KPI Name',
-                                 'Progress Bar': 'Percentage', 'Status Progress': 'KPI Status', 'updated': 'Status Progress'}, inplace = True)
+    monthly_df.rename(
+        columns={'index': 'No', 'external_id': 'Employee ID', 'name': 'Employee Name', 'job_title': 'Position Name',
+                 'salary_level': 'Job Level / Grade',
+                 'department': 'Department', 'division': 'Division', 'direktorat': 'Directorate',
+                 'Job Role': 'Category', 'Goal Type': 'KPI Category', 'Goal Name': 'KPI Name',
+                 'Progress Bar': 'Percentage', 'Status Progress': 'KPI Status', 'updated': 'Status Progress',
+                 'KPI Dependency': 'Golongan KPI'}, inplace=True)
+
     monthly_df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    monthly = monthly_df[monthly_df['Directorate'] != 'Board of Management']
+    monthly_predef = monthly_df[(monthly_df['Golongan KPI'] == 'Predefined KPI') & (monthly_df['Directorate'] == 'Board of Management')]
 
-    return monthly_df
+    return monthly, monthly_predef
 
 
 def current_update(monthly_df, now):
@@ -188,6 +197,43 @@ def user_sheet(user_linknet, update_record, now):
     return user_df
 
 
+def get_coaching_df(url, api_key, now, cycle_id, user_df, query_id, orgname):
+    params = {"scheme": orgname, "cycle_id": str(cycle_id)}
+    result = get_fresh_query_result(url, query_id, api_key, params)
+
+    df = pd.DataFrame(result)
+
+    coach_draft = df[['Reviewee ID', 'order', 'question', 'answer', 'phase_type', 'state']]
+    coach_self = coach_draft.loc[
+        coach_draft['phase_type'] == 'self_review', ['Reviewee ID', 'order', 'question', 'answer', 'state']]
+    coach_self.rename(columns={'answer': 'Jawaban Karyawan', 'state': 'State Self'}, inplace=True)
+    coach_manager = coach_draft.loc[
+        coach_draft['phase_type'] == 'manager_review', ['Reviewee ID', 'order', 'answer', 'state']]
+    coach_manager.rename(columns={'answer': 'Jawaban Manager', 'state': 'State Manager'}, inplace=True)
+    coach_fin = pd.merge(coach_self, coach_manager, on=['Reviewee ID', 'order'], how='left')
+
+    coaching_df = user_df.join(coach_fin.set_index('Reviewee ID'), on='Happy5 ID', how='inner')[
+        ['Happy5 ID', 'Employee ID', 'Employee Name',
+         'Position Name', 'Job Level / Grade', 'Division',
+         'Department', 'Directorate', 'Category', 'question',
+         'Jawaban Karyawan', 'Jawaban Manager', 'State Self', 'State Manager', 'Superior']]
+    conditions = [
+        (coaching_df['State Self'] == 'in_progress'),
+        (coaching_df['State Self'] == 'done') & (
+                    (coaching_df['State Manager'] == 'in_progress') | (coaching_df['State Manager'].isnull() == True)),
+        (coaching_df['State Self'] == 'done') & (coaching_df['State Manager'] == 'done')]
+
+    values = ['Draft', 'On Progress', 'Complete']
+
+    coaching_df['Submission Status'] = np.select(conditions, values)
+
+    coaching_df = coaching_df[
+        ['Happy5 ID', 'Employee ID', 'Employee Name', 'Position Name', 'Job Level / Grade', 'Division',
+         'Department', 'Directorate', 'Category', 'question', 'Jawaban Karyawan', 'Jawaban Manager', 'Superior',
+         'Submission Status']]
+    return coaching_df
+
+
 # Take current time, to avoid discrepancies in time during process
 def main():
     now = dt.now()
@@ -199,15 +245,27 @@ def main():
     service_acc_file = os.getenv('SERVICE_ACC')
     SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SHEET_ID')
 
+    orgname = os.getenv('ORGNAME') # linknet
+    coach_cycle_id = os.getenv('COACHING_CYCLE_ID') # 31
+
+    ## Query Environment Variable
+    user_query = os.getenv('USER_QUERY_ID')  # 443
+    stat_query = os.getenv('USER_QUERY_ID_2')  # 452
+    obj_query = os.getenv('OBJ_QUERY_ID')  # 455
+    coach_query = os.getenv('COACH_QUERY_ID')  # 440
+
+
     print("Start Fetching Queries from Redash")
-    user_data = get_user_df(url, api_key, now)
+    user_data = get_user_df(url, api_key, now, user_query, stat_query, orgname)
     print("User Data Fetched!")
-    monthly_progress = get_progress_df(url, api_key, now, user_data)
+    monthly_progress, monthly_predef = get_progress_df(url, api_key, now, user_data, obj_query, orgname)
     print("Monthly Progress Data Fetched!")
     user_update, update_record = current_update(monthly_progress, now)
     print("User and Directorate Data Fetched!")
     user_df = user_sheet(user_data, update_record, now)
     print("User Data table created!")
+    coaching_df = get_coaching_df(url, api_key, now, coach_cycle_id, user_df, coach_query, orgname)
+    print("Coaching Data Fetched!")
 
     gc = gspread.service_account(filename= service_acc_file)
     sh = gc.open_by_key(SAMPLE_SPREADSHEET_ID)
@@ -231,6 +289,16 @@ def main():
     sh.values_clear("Update Record!A2:C")
     set_with_dataframe(worksheet3, update_record)
     print("Update Record Sheet Updated")
+
+    worksheet5 = sh.worksheet("1 on 1")
+    sh.values_clear("1 on 1!A2:Z")
+    set_with_dataframe(worksheet5, coaching_df)
+    print("1 on 1 Sheet Updated")
+
+    worksheet = sh.worksheet("Monthly Progress BOM")
+    sh.values_clear("Monthly Progress BOM!A2:U")
+    set_with_dataframe(worksheet, monthly_predef)
+    print("Monthly Progress BOM Sheet Updated")
 
     print("Runtime : " + str(dt.now() - now))
 

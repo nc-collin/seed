@@ -49,9 +49,8 @@ def get_fresh_query_result(redash_url, query_id, api_key, params):
     return response.json()['query_result']['data']['rows']
 
 
-def get_user_df(url, api_key, now):
-    query_id = 375
-    params = {"org": "paragon", "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"),
+def get_user_df(url, api_key, now, query_id, orgname):
+    params = {"org": orgname, "start_date": "2017-01-01", "end_date": now.strftime("%Y-%m-%dT23:59:59"),
               "platform": "performance"}
     result = get_fresh_query_result(url, query_id, api_key, params)
 
@@ -70,8 +69,7 @@ def get_user_df(url, api_key, now):
     return user_df_report, user_df_raw
 
 
-def get_activity_df(user_df_update, url, api_key, now):
-    query_id_w = 321
+def get_activity_df(user_df_update, url, api_key, now, query_id_w):
     params_w = {"start_date": now.strftime("%Y-%m-01"), "end_date": now.strftime("%Y-%m-%dT23:59:59")}
     result_w = get_fresh_query_result(url, query_id_w, api_key, params_w)
 
@@ -110,14 +108,22 @@ def get_activity_df(user_df_update, url, api_key, now):
     return activity_df_report, activity_df_raw
 
 
-def get_obj_df(url, api_key, now):
-    query_id2 = 422
-    params2 = {"Org Name": "paragon"}
+def get_obj_df(url, api_key, now, query_id2, orgname):
+    params2 = {"Org Name": orgname}
     result_2 = get_fresh_query_result(url, query_id2, api_key, params2)
 
     obj_df = pd.DataFrame(result_2)
 
-    obj_df['Progress Bar'] = obj_df['Current Value'] / obj_df['Target']
+    obj_df['Progress Bar'] = 0
+    for i in range(obj_df.shape[0]):
+        if obj_df['calculation_type'][i] == 'less_is_better':
+            delta = obj_df['Target'][i] - obj_df['Current Value'][i]
+            abs_target = abs(obj_df['Target'][i])
+            obj_df.loc[i, 'Progress Bar'] = (1 + (delta / abs_target)) * 100
+        else:
+            delta = obj_df['Current Value'][i] - obj_df['Start Value'][i]
+            target = obj_df['Target'][i] - obj_df['Start Value'][i]
+            obj_df.loc[i, 'Progress Bar'] = 100 * delta / target
     elapsed_time = pd.DataFrame((now - pd.to_datetime(obj_df['Start Date'])).dt.days)
     total_time = pd.DataFrame((pd.to_datetime(obj_df['Due Date']) - pd.to_datetime(obj_df['Start Date'])).dt.days)
     progress_chunk = 24
@@ -130,11 +136,11 @@ def get_obj_df(url, api_key, now):
     diff = pd.DataFrame(expected_ratio[0].mod(progress_chunk))
     n = diff.shape[0]
     for i in range(n):
-        if expected_ratio[0][i] < ugly_diff_threshold:
+        if diff[0][i] < ugly_diff_threshold:
             if expected_ratio[0][i] < 1:
                 expected_ratio[0][i] -= diff[0][i]
 
-    obj_df['Expected Completion Ratio'] = expected_ratio
+    obj_df['Expected Completion Ratio'] = expected_ratio * 100
 
     ratio = pd.DataFrame(obj_df['Progress Bar'] / obj_df['Expected Completion Ratio'])
     ratio[ratio[0] > 1] = 1
@@ -175,10 +181,9 @@ def get_obj_df(url, api_key, now):
     return obj_df_edit, obj_df_raw
 
 
-def get_review_df(url, api_key, cycle_id, user_df):
-    query_id = 400
+def get_review_df(url, api_key, cycle_id, user_df, query_id, orgname):
     cycle_id = str(cycle_id)
-    params = {"scheme": "paragon", "id": cycle_id}
+    params = {"scheme": orgname, "id": cycle_id}
     result = get_fresh_query_result(url, query_id, api_key, params)
 
     assignment_df = pd.DataFrame(result)
@@ -222,13 +227,19 @@ def main():
     url = os.getenv('REDASH_URL')
     api_key = os.getenv('API_KEY')
     rev = os.getenv('ONGOING_REVIEW')
+    orgname = os.getenv('ORGNAME')
+
+    ## Query Env Variable
+    user_query = os.getenv('USER_QUERY_ID')  # 375
+    act_query = os.getenv('ACTIVITY_QUERY_ID')  # 321
+    obj_query = os.getenv('OBJECTIVE_QUERY_ID')  # 422
 
     print("Start Fetching Queries from Redash")
-    user_data, user_raw = get_user_df(url, api_key, now)
+    user_data, user_raw = get_user_df(url, api_key, now, user_query, orgname)
     print("User Data Fetched!")
-    activity_data, activity_raw = get_activity_df(user_data, url, api_key, now)
+    activity_data, activity_raw = get_activity_df(user_data, url, api_key, now, act_query)
     print("Activity Data Fetched!")
-    obj_data, obj_raw = get_obj_df(url, api_key, now)
+    obj_data, obj_raw = get_obj_df(url, api_key, now, obj_query, orgname)
     print("Objective Data Fetched!")
 
     worksheet = sh.worksheet("User")
@@ -265,9 +276,10 @@ def main():
     print("Raw Data - Objective sheet Updated")
 
     if rev == 'TRUE':
+        review_query = os.getenv('REVIEW_QUERY_ID')  # 440
         review_cycle = os.getenv('REVIEW_CYCLE_ID')
         rev_period = os.getenv('REVIEW_PERIOD')
-        review_data = get_review_df(url, api_key, review_cycle, user_data)
+        review_data = get_review_df(url, api_key, review_cycle, user_data, review_query, orgname)
         print("Review Data Fetched!")
 
         review_ws = sh.worksheet("Review Assignment " + rev_period)
