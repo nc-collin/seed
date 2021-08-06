@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: redash-gsheets
+  namespace: redash-gsheets
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      tolerations:
+      - key: "nodetype"
+        value: "pushworkers"
+        operator: "Equal"
+        effect: "NoSchedule"
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: regsecret
+      containers:
+      - name: redash-gsheets
+        image: registry-intl.ap-southeast-5.aliyuncs.com/happy5/redash-gsheets:latest
+        command:
+        - /bin/bash
+        - -c
+        - python gspread_cit.py && python gspread_linknet.py
+        env:
+        - name: REDASH_URL
+          value: https://metabase.happy5.net
+        - name: SERVICE_ACC
+          value: "metabase-161510-c3e51e3576ce.json"
+        - name: API_KEY
+          value: "2uLA3yC87urFKbUViMY32pX0ZPwHHoqo3GzeBs7n"
+        - name: PARAGON_SHEET_ID
+          value: "13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4"
+        - name: ONGOING_REVIEW
+          value: "FALSE"
+        - name: REVIEW_CYCLE_ID
+          value: "9"
+        - name: REVIEW_PERIOD
+          value: "Q2"
+        - name: LINKNET_SHEET_ID
+          value: "1EM9dtqZu-cj0f60g_1kb1wYfT096vMs3_k4rc2Y_R1E"
+        - name: XL_SHEET_ID
+          value: "1x2OSUmbWpoe_ZU07GpOMwageTvyrT7rWrUgEkE5ergQ"
+
+
