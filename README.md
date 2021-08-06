@@ -3,7 +3,7 @@
 | ---- | ----------- | ------------- |
 | REDASH_URL | Specify your redash URL | `https://data.happy5.net` |
 | SERVICE_ACC | Specify the path of your Service Account File (.json) from Google Cloud | `metabase-161510-c3e51e3576ce.json` |
-| API_KEY | Redash API KEY | `2uLA3yC87urFKbUViMY32pX0ZPxxxxxxxxxxxxxx` |
+| API_KEY | Redash API KEY | `QuNzJnm0yc5gt1NTtCRdpyEVAweRUbgWLxD7y8t2` |
 | ORGNAME | Organization Name in Happy5 | `paragon` |
 
 ## Specific Environment Variables for some orgs
