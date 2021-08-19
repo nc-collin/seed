@@ -17,7 +17,7 @@
 | USER_QUERY_ID | Query ID for User | 369 |
 | ACTIVITY_QUERY_ID | Query ID for Activity Data (Specific for Paragon) | 372 |
 | OBJECTIVE_QUERY_ID | Query ID for Objective Data | 370 |
-| REVIEW_QUERY_ID | Query ID for Review Data | 371 |
+| REVIEW_QUERY_ID | Query ID for Review Data | 376 |
 
 ### Linknet - First Squad Impact
 | Name | Description | Example Value |
