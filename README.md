@@ -11,7 +11,7 @@
 | Name | Description | Example Value |
 | ---- | ----------- | ------------- |
 | PARAGON_SHEET_ID | Spreadsheet ID of your Google Sheet File | `13Hyb1nPwQBqiDxmjB2_Sg2mevsPszai6OPniCq5yze4` |
-| ONGOING_REVIEW | TRUE or FALSE Whether there are ongoing performance review or not | `'FALSE'` |
+| ONGOING_REVIEW | TRUE or FALSE Whether there are ongoing performance review or not | `'True'` |
 | REVIEW_CYCLE_ID | Review Cycle ID (Must be specified) (Value must be string)| `18` |
 | REVIEW_PERIOD | Review Period (Q1,Q2,Q3,Q4) | `Q2` |
 | USER_QUERY_ID | Query ID for User | 369 |
