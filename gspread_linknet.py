@@ -253,7 +253,7 @@ def main():
     SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SHEET_ID')
 
     orgname = os.getenv('LINKNET_ORGNAME') # linknet
-    coach_cycle_id = os.getenv('COACHING_CYCLE_ID') # 31
+    coach_cycle_id = os.getenv('LINKNET_COACHING_CYCLE_ID') # 31
 
     ## Query Environment Variable
     user_query = os.getenv('LINKNET_USER_QUERY_ID')  # 443
