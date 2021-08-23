@@ -6,6 +6,13 @@ from gspread_dataframe import get_as_dataframe, set_with_dataframe
 import pandas as pd
 import os
 import requests
+
+import sentry_sdk
+sentry_sdk.init(
+    "https://4f5a07a552664c60b86c22b78de2a0d5@o27960.ingest.sentry.io/5921079",
+    traces_sample_rate=1.0
+)
+
 import time
 from pprint import pprint
 import json
