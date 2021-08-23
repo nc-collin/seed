@@ -12,6 +12,11 @@ import json
 from datetime import datetime as dt
 from datetime import timedelta
 
+import sentry_sdk
+sentry_sdk.init(
+    "https://4f5a07a552664c60b86c22b78de2a0d5@o27960.ingest.sentry.io/5921079",
+    traces_sample_rate=1.0
+)
 
 # Function from redash - refresh_query.py
 def poll_job(s, redash_url, job):
