@@ -245,14 +245,14 @@ def main():
     service_acc_file = os.getenv('SERVICE_ACC')
     SAMPLE_SPREADSHEET_ID = os.getenv('LINKNET_SHEET_ID')
 
-    orgname = os.getenv('ORGNAME') # linknet
+    orgname = os.getenv('LINKNET_ORGNAME') # linknet
     coach_cycle_id = os.getenv('COACHING_CYCLE_ID') # 31
 
     ## Query Environment Variable
-    user_query = os.getenv('USER_QUERY_ID')  # 443
-    stat_query = os.getenv('USER_QUERY_ID_2')  # 452
-    obj_query = os.getenv('OBJ_QUERY_ID')  # 455
-    coach_query = os.getenv('COACH_QUERY_ID')  # 440
+    user_query = os.getenv('LINKNET_USER_QUERY_ID')  # 443
+    stat_query = os.getenv('LINKNET_USER_QUERY_ID_2')  # 452
+    obj_query = os.getenv('LINKNET_OBJ_QUERY_ID')  # 455
+    coach_query = os.getenv('LINKNET_COACH_QUERY_ID')  # 440
 
 
     print("Start Fetching Queries from Redash")

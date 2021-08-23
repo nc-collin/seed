@@ -230,9 +230,9 @@ def main():
     orgname = os.getenv('ORGNAME')
 
     ## Query Env Variable
-    user_query = os.getenv('USER_QUERY_ID')  # 375
-    act_query = os.getenv('ACTIVITY_QUERY_ID')  # 321
-    obj_query = os.getenv('OBJECTIVE_QUERY_ID')  # 422
+    user_query = os.getenv('CIT_USER_QUERY_ID')  # 375
+    act_query = os.getenv('CIT_ACTIVITY_QUERY_ID')  # 321
+    obj_query = os.getenv('CIT_OBJECTIVE_QUERY_ID')  # 422
 
     print("Start Fetching Queries from Redash")
     user_data, user_raw = get_user_df(url, api_key, now, user_query, orgname)
@@ -276,9 +276,9 @@ def main():
     print("Raw Data - Objective sheet Updated")
 
     if rev == 'TRUE':
-        review_query = os.getenv('REVIEW_QUERY_ID')  # 440
-        review_cycle = os.getenv('REVIEW_CYCLE_ID')
-        rev_period = os.getenv('REVIEW_PERIOD')
+        review_query = os.getenv('CIT_REVIEW_QUERY_ID')  # 400
+        review_cycle = os.getenv('CIT_REVIEW_CYCLE_ID')
+        rev_period = os.getenv('CIT_REVIEW_PERIOD')
         review_data = get_review_df(url, api_key, review_cycle, user_data, review_query, orgname)
         print("Review Data Fetched!")
 
