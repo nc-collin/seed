@@ -233,7 +233,7 @@ def main():
     url = os.getenv('REDASH_URL')
     api_key = os.getenv('API_KEY')
     rev = os.getenv('ONGOING_REVIEW')
-    orgname = os.getenv('ORGNAME')
+    orgname = os.getenv('CIT_ORGNAME')
 
     ## Query Env Variable
     user_query = os.getenv('CIT_USER_QUERY_ID')  # 375
