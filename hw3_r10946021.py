@@ -1,6 +1,5 @@
 import pandas as pd
 from keras.datasets import fashion_mnist
-import pandas as pd
 import numpy as np
 import torch as py
 import keras as keras
