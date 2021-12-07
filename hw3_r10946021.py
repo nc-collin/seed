@@ -1,7 +1,6 @@
 import pandas as pd
 from keras.datasets import fashion_mnist
 import numpy as np
-import torch as py
 import keras as keras
 from datetime import datetime
 from keras.models import Sequential
@@ -27,12 +26,12 @@ def load_dataset():
     return trainX, trainY, testX, testY
 
 
-def base_model():
+def basemodel():
     model = Sequential()
-    model.add(Conv2D(128, kernel_size = (5,5), strides = (1,1),activation='relu', input_shape=(28, 28, 1)))
-    model.add(MaxPool2D(pool_size = (2,2)))
-    model.add(Conv2D(128, kernel_size = (5,5), strides = (1,1),activation='relu', padding='valid'))
-    model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Conv2D(128, kernel_size=(5, 5), strides=(1, 1), activation='relu', input_shape=(28, 28, 1)))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(128, kernel_size=(5, 5), strides=(1, 1), activation='relu', padding='valid'))
+    model.add(MaxPool2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.4))
@@ -44,12 +43,12 @@ def base_model():
     return model
 
 
-def create_model(filter1,filter2,kernel1,kernel2,stride1,stride2,pad):
+def create_model(filter1, filter2, kernel1, kernel2, stride1, stride2, pad):
     model = Sequential()
-    model.add(Conv2D(filter1, kernel_size = kernel1, strides = stride1,activation='relu', input_shape=(28, 28, 1)))
-    model.add(MaxPool2D(pool_size = (2,2)))
-    model.add(Conv2D(filter2, kernel_size = kernel2, strides = stride2,activation='relu', padding=pad))
-    model.add(MaxPool2D(pool_size = (2,2)))
+    model.add(Conv2D(filter1, kernel_size=kernel1, strides=stride1, activation='relu', input_shape=(28, 28, 1)))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(filter2, kernel_size=kernel2, strides=stride2, activation='relu', padding=pad))
+    model.add(MaxPool2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.4))
@@ -70,7 +69,7 @@ def KFold_Evaluation(X, Y, model, n_folds=5):
     for t, v in kfold.split(X):
         to = datetime.now()
         Xtr, Ytr, Xval, Yval = X[t], Y[t], X[v], Y[v]
-        model.fit(Xtr, Ytr, epochs=30, batch_size=120, validation_data=(Xval, Yval), verbose=0)
+        model.fit(Xtr, Ytr, epochs=30, batch_size=120, validation_data=(Xval, Yval), verbose=1)
         loss, acc = model.evaluate(Xval, Yval, verbose=0)
         print('> %.3f' % (acc * 100.0))
         # append scores
@@ -85,19 +84,19 @@ def KFold_Evaluation(X, Y, model, n_folds=5):
 
 def alexnet():
     model = Sequential()
-    model.add(Conv2D(96, kernel_size = (7,7), strides = (4,4),activation='relu', input_shape=(28, 28, 1)))
+    model.add(Conv2D(96, kernel_size=(7, 7), strides=(4, 4), activation='relu', input_shape=(28, 28, 1)))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size = (3,3), strides = (2,2), padding="same"))
-    model.add(Conv2D(256, kernel_size = (5,5), strides = (1,1),activation='relu', padding="same"))
+    model.add(MaxPool2D(pool_size=(3, 3), strides=(2, 2), padding="same"))
+    model.add(Conv2D(256, kernel_size=(5, 5), strides=(1, 1), activation='relu', padding="same"))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size = (3,3), strides = (2,2), padding="same"))
-    model.add(Conv2D(384, kernel_size = (3,3), strides = (1,1), activation='relu', padding="same"))
+    model.add(MaxPool2D(pool_size=(3, 3), strides=(2, 2), padding="same"))
+    model.add(Conv2D(384, kernel_size=(3, 3), strides=(1, 1), activation='relu', padding="same"))
     model.add(BatchNormalization())
-    model.add(Conv2D(384, kernel_size = (3,3), strides = (1,1), activation='relu', padding="same"))
+    model.add(Conv2D(384, kernel_size=(3, 3), strides=(1, 1), activation='relu', padding="same"))
     model.add(BatchNormalization())
-    model.add(Conv2D(256, kernel_size = (3,3), strides = (1,1), activation='relu', padding="same"))
+    model.add(Conv2D(256, kernel_size=(3, 3), strides=(1, 1), activation='relu', padding="same"))
     model.add(BatchNormalization())
-    model.add(MaxPool2D(pool_size = (3,3), strides = (1,1), padding="same"))
+    model.add(MaxPool2D(pool_size=(3, 3), strides=(1, 1), padding="same"))
     model.add(Flatten())
     model.add(Dense(4096, activation='relu'))
     model.add(Dropout(0.5))
@@ -110,32 +109,32 @@ def alexnet():
 
 
 def vgg16net():
-  model = Sequential()
-  model.add(Conv2D(input_shape=(28,28,1),filters=64,kernel_size=(3,3),padding="same", activation="relu"))
-  model.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
-  model.add(MaxPool2D(pool_size=(2,2),strides=(2,2),padding="same"))
-  model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(MaxPool2D(pool_size=(2,2),strides=(2,2),padding="same"))
-  model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(MaxPool2D(pool_size=(2,2),strides=(2,2),padding="same"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(MaxPool2D(pool_size=(2,2),strides=(2,2),padding="same"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-  model.add(MaxPool2D(pool_size=(2,2),strides=(2,2),padding="same"))
-  model.add(Flatten())
-  model.add(Dense(units=4096,activation="relu"))
-  model.add(Dense(units=4096,activation="relu"))
-  model.add(Dense(units=10, activation="softmax"))
-  # compile model
-  model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-  return model
+    model = Sequential()
+    model.add(Conv2D(input_shape=(28, 28, 1), filters=64, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=64, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding="same"))
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding="same"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=(2, 2), padding="same"))
+    model.add(Flatten())
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dense(units=10, activation="softmax"))
+    # compile model
+    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
 
 
 def plot_curves(history):
@@ -159,18 +158,18 @@ def plot_curves(history):
     plt.show()
 
 
-def plot_first_activation(mod,img,x,y):
+def plot_first_activation(mod, img, x, y):
     model = models.Model(inputs=mod.inputs, outputs=mod.layers[1].output)
     feature_maps = model.predict(img)
     ind = 1
     for _ in range(x):
         for _ in range(y):
             # specify subplot and turn of axis
-            ax = plt.subplot(x, y, ix)
+            ax = plt.subplot(x, y, ind)
             ax.set_xticks([])
             ax.set_yticks([])
             # plot filter channel in grayscale
-            plt.imshow(feature_maps[0,:,:,ind-1])
+            plt.imshow(feature_maps[0, :, :, ind - 1])
             ind += 1
     # show the figure
     plt.show()
@@ -178,28 +177,31 @@ def plot_first_activation(mod,img,x,y):
 
 def plot_prediction(model, testX, testX_norm, testY):
     images = testX[752:762]
-    images_norm = images/255.0
+    images_norm = images / 255.0
     labels = testY[752:762]
-    label_name = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    label_name = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag',
+                  'Ankle boot']
 
     num_row = 2
-    num_col = 5# plot images
-    fig, axes = plt.subplots(num_row, num_col, figsize=(2*num_col,2*num_row))
-    predict = model.predict(images_norm,verbose=1)
+    num_col = 5  # plot images
+    fig, axes = plt.subplots(num_row, num_col, figsize=(2 * num_col, 2 * num_row))
+    predict = model.predict(images_norm, verbose=1)
     check = []
     for i in range(10):
-      if np.argmax(predict[i]) == np.argmax(labels[i]):
-          check.append(True)
-      else:
-          check.append(False)
+        if np.argmax(predict[i]) == np.argmax(labels[i]):
+            check.append(True)
+        else:
+            check.append(False)
     for i in range(10):
-        ax = axes[i//num_col, i%num_col]
-        ax.imshow(images[i].reshape([28,28]), cmap='gray')
+        ax = axes[i // num_col, i % num_col]
+        ax.imshow(images[i].reshape([28, 28]), cmap='gray')
         ax.axis('off')
         if check[i] == True:
-          ax.text(0.5, 1, f'{label_name[np.argmax(predict[i])]}', horizontalalignment='center', verticalalignment='top', transform=ax.transAxes, fontsize=14, weight='bold', color='lightgreen')
+            ax.text(0.5, 1, f'{label_name[np.argmax(predict[i])]}', horizontalalignment='center',
+                    verticalalignment='top', transform=ax.transAxes, fontsize=14, weight='bold', color='lightgreen')
         else:
-          ax.text(0.5, 1, f'{label_name[np.argmax(predict[i])]}', horizontalalignment='center', verticalalignment='top', transform=ax.transAxes, fontsize=14, weight='bold', color='red')
+            ax.text(0.5, 1, f'{label_name[np.argmax(predict[i])]}', horizontalalignment='center',
+                    verticalalignment='top', transform=ax.transAxes, fontsize=14, weight='bold', color='red')
     plt.tight_layout()
     plt.show()
 
@@ -216,7 +218,7 @@ def main():
     Xval = trainX_norm[int(0.8 * trainX_norm.shape[0]):]
     Ytr = trainY[:int(0.8 * trainX_norm.shape[0])]
     Yval = trainY[int(0.8 * trainX_norm.shape[0]):]
-    base_model = base_model()
+    base_model = basemodel()
 
     filter_1 = create_model(64, 64, (5, 5), (5, 5), (1, 1), (1, 1), "valid")
     filter_2 = create_model(256, 256, (5, 5), (5, 5), (1, 1), (1, 1), "valid")
@@ -230,7 +232,7 @@ def main():
     stride_2 = create_model(128, 128, (5, 5), (5, 5), (3, 3), (1, 1), "same")
     stride_3 = create_model(128, 128, (5, 5), (5, 5), (1, 1), (3, 3), "same")
 
-    #Performing K-Fold Validation on all model
+    # Performing K-Fold Validation on all model
     base_model_loss, base_model_score = KFold_Evaluation(trainX_norm, trainY, base_model, 5)
     filter1_loss, filter1_score = KFold_Evaluation(trainX_norm, trainY, filter_1, 5)
     filter2_loss, filter2_score = KFold_Evaluation(trainX_norm, trainY, filter_2, 5)
@@ -247,9 +249,10 @@ def main():
     alex = alexnet()
     vgg16 = vgg16net()
 
+    histories = []
     ind = 0
     for i in [base_model, filter_1, filter_2, filter_3, kernel_1, kernel_2, kernel_3, stride_1, stride_2, stride_3]:
-        print(f"Fitting Model {ind+1}")
+        print(f"Fitting Model {ind + 1}")
         history = i.fit(Xtr, Ytr, epochs=30, batch_size=120, validation_data=(Xval, Yval), verbose=1)
         histories[ind] = history
         ind += 1
@@ -302,7 +305,8 @@ def main():
 
     # Evaluating all the models
     print("Evaluating all the models with Test Set")
-    for i in [base_model, filter_1, filter_2, filter_3, kernel_1, kernel_2, kernel_3, stride_1, stride_2, stride_3, alexnet, vgg16net]:
+    for i in [base_model, filter_1, filter_2, filter_3, kernel_1, kernel_2, kernel_3, stride_1, stride_2, stride_3,
+              alexnet, vgg16net]:
         i.evaluate(testX_norm, testY)
 
     # Plotting first convolutional layer Feature maps
@@ -315,7 +319,6 @@ def main():
         plt.figure(figsize=(16, 12), dpi=80)
         for _ in range(8):
             for _ in range(int(shapes / 8)):
-
                 ax = plt.subplot(8, int(shapes / 8), ix)
                 ax.set_xticks([])
                 ax.set_yticks([])
