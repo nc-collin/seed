@@ -249,7 +249,7 @@ def main():
     alex = alexnet()
     vgg16 = vgg16net()
 
-    histories = []
+    histories = {}
     ind = 0
     for i in [base_model, filter_1, filter_2, filter_3, kernel_1, kernel_2, kernel_3, stride_1, stride_2, stride_3]:
         print(f"Fitting Model {ind + 1}")
@@ -264,7 +264,7 @@ def main():
 
     # list all data in history
     for i in range(10):
-        history = i
+        history = histories[i]
         print(history.history.keys())
         # summarize history for accuracy
         plt.plot(history.history['accuracy'])
@@ -306,8 +306,12 @@ def main():
     # Evaluating all the models
     print("Evaluating all the models with Test Set")
     for i in [base_model, filter_1, filter_2, filter_3, kernel_1, kernel_2, kernel_3, stride_1, stride_2, stride_3,
-              alexnet, vgg16net]:
+              alex, vgg16]:
         i.evaluate(testX_norm, testY)
+
+    # Plotting detected image (Index 0 of test set)
+    plt.imshow(testX[0].reshape([28, 28]), cmap='gray')
+    plt.show()
 
     # Plotting first convolutional layer Feature maps
     print("Plotting the first convolutional Layers of Kernel_3, Alexnet, and VGG16net")
