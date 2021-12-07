@@ -69,7 +69,7 @@ def KFold_Evaluation(X, Y, model, n_folds=5):
     for t, v in kfold.split(X):
         to = datetime.now()
         Xtr, Ytr, Xval, Yval = X[t], Y[t], X[v], Y[v]
-        model.fit(Xtr, Ytr, epochs=30, batch_size=120, validation_data=(Xval, Yval), verbose=1)
+        model.fit(Xtr, Ytr, epochs=30, batch_size=120, validation_data=(Xval, Yval), verbose=0)
         loss, acc = model.evaluate(Xval, Yval, verbose=0)
         print('> %.3f' % (acc * 100.0))
         # append scores
