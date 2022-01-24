@@ -1,5 +1,5 @@
 {
         "description": "Company Test",
-        "external_url": "https://forum.openzeppelin.com",
-        "name": "Test Company"
-}
+        "name": "Test Company",
+        "images":"https://raw.githubusercontent.com/nc-collin/seed/master/5468.jpg_wh860.jpg"
+}       
