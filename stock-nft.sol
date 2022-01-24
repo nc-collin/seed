@@ -2,7 +2,7 @@
 // SPDX-License-identifier: MIT
 pragma solidity ^0.6.0;
 
-import "./StockCertificate.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.2.0/contracts/token/ERC1155/ERC1155.sol";
 
 contract stock_nft is ERC1155 {
 
@@ -13,7 +13,7 @@ contract stock_nft is ERC1155 {
     string public url;
     uint public origin_token_count;
 
-    uint private token_id = 0;
+    uint256 public token_id = 0;
     uint public proposal_count = 1;
 
     address public system_address;
@@ -39,13 +39,13 @@ contract stock_nft is ERC1155 {
     mapping(uint => mapping(address => bool)) public isConfirmed;
 
     constructor(string memory _company_name, address[] memory _board_members, 
-        uint _token_count, string memory _founding_date, address _system_address) public  ERC1155("https://raw.githubusercontent.com/nc-collin/seed/master/{i}.json?token=GHSAT0AAAAAABQE7EOBLELIQHXMHGBWAXVYYPN263A"){
+        uint _token_count, string memory _founding_date, address _system_address) public  ERC1155("https://raw.githubusercontent.com/nc-collin/seed/master/{id}.json"){
 
         company_name = _company_name;
         board_members = _board_members;
         board_member_count = board_members.length;
         origin_token_count = _token_count;
-        url = "https://raw.githubusercontent.com/nc-collin/seed/master/{i}.json?token=GHSAT0AAAAAABQE7EOBLELIQHXMHGBWAXVYYPN263A";
+        url = "https://raw.githubusercontent.com/nc-collin/seed/master/{id}.json";
 
         for (uint i=0; i < board_member_count; ++i) {
             is_board_member[board_members[i]] = true;
